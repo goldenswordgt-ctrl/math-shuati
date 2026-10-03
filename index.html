@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>刷题 · Math Drill</title>
+<meta name="description" content="Endless high-school math practice: algebra, functions, trig, probability, calculus. Instant checking, worked solutions, mistake notebook.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='10' fill='%23d63a2b'/><text x='32' y='46' font-size='38' text-anchor='middle' fill='white' font-family='PingFang SC,Microsoft YaHei,sans-serif' font-weight='700'>题</text></svg>">
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<link rel="stylesheet" href="css/style.css">
+<script>try{var t=localStorage.getItem('shuati.theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#" data-go="home"><span class="seal">刷题</span><span class="brand-t">Math Drill</span></a>
+    <nav class="nav">
+      <button data-go="home" class="on">Practice</button>
+      <button data-go="mistakes">错题本 <span class="badge" id="mBadge"></span></button>
+      <button data-go="stats">Stats</button>
+      <button class="theme" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="v-home" class="view on">
+    <div class="today">
+      <svg class="ring" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" class="ring-bg"/><circle cx="32" cy="32" r="27" class="ring-fg" id="ringFg"/></svg>
+      <div class="today-txt">
+        <div class="today-n"><b id="todayN">0</b> / <span id="goalN">30</span> today</div>
+        <div class="muted" id="streakTxt"></div>
+      </div>
+      <label class="goal">Daily goal
+        <select id="goalSel"><option>10</option><option>20</option><option>30</option><option>50</option><option>100</option></select>
+      </label>
+    </div>
+
+    <div class="sec-h"><h2>Topics <span class="zh">题型</span></h2>
+      <div class="sec-act"><button class="link" id="allT">All</button><button class="link" id="noneT">None</button></div>
+    </div>
+    <div class="topics" id="topics"></div>
+
+    <div class="row2">
+      <div>
+        <h2>Difficulty <span class="zh">难度</span></h2>
+        <div class="seg" id="diffSeg">
+          <button data-v="1">Easy<small>基础</small></button><button data-v="2">Medium<small>提高</small></button><button data-v="3">Hard<small>挑战</small></button><button data-v="mix">Mixed<small>混合</small></button>
+        </div>
+      </div>
+      <div>
+        <h2>Mode <span class="zh">模式</span></h2>
+        <div class="seg" id="modeSeg">
+          <button data-v="endless">Endless<small>无尽</small></button><button data-v="set">20 Qs<small>套题</small></button><button data-v="sprint">Sprint 3:00<small>限时</small></button>
+        </div>
+      </div>
+    </div>
+
+    <button class="go" id="startBtn">Start 开始刷题 <kbd>↵</kbd></button>
+  </section>
+
+  <!-- DRILL -->
+  <section id="v-drill" class="view">
+    <div class="dbar">
+      <button class="link" id="endBtn">← End <kbd>Esc</kbd></button>
+      <div class="dprog" id="dProg"></div>
+      <div class="dscore"><span id="dScore">0 / 0</span><span class="combo" id="dCombo"></span></div>
+    </div>
+    <div class="pbar"><i id="pFill"></i></div>
+
+    <article class="card">
+      <div class="qmeta"><span class="tag" id="qTag"></span><span class="pips" id="qPips"></span></div>
+      <div class="q" id="qText"></div>
+      <div class="ansrow">
+        <input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your answer" aria-label="Your answer">
+        <button class="btn primary" id="subBtn">Check</button>
+        <button class="btn" id="skipBtn" title="Show the answer (counts as a miss)">Skip</button>
+      </div>
+      <div class="keys" id="keys">
+        <button data-ins="sqrt(">√</button><button data-ins="pi">π</button><button data-ins="/">a/b</button><button data-ins="^">xⁿ</button><button data-ins="(">(</button><button data-ins=")">)</button><button data-ins=", ">,</button><button data-ins="-">−</button>
+        <span class="reads" id="reads"></span>
+      </div>
+      <div class="fb" id="fb"></div>
+    </article>
+    <details class="howto">
+      <summary>How to type answers</summary>
+      <p>Fractions <code>3/4</code> · roots <code>sqrt(2)</code> or <code>√2</code> · π as <code>pi</code> (<code>3pi/4</code>) · powers <code>2^3</code> · several answers <code>2, -3</code> (any order) · points <code>(1, 2)</code> · percents <code>25</code> or <code>25%</code>. Exact forms are expected; for irrational answers a 2-decimal approximation also counts.</p>
+    </details>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="v-summary" class="view">
+    <div class="sum-head">
+      <div class="grade" id="grade"></div>
+      <div class="sum-lines" id="sumLines"></div>
+    </div>
+    <div class="sum-btns">
+      <button class="go small" id="againBtn">Again 再来一组</button>
+      <button class="btn" data-go="mistakes">Review mistakes</button>
+      <button class="btn" data-go="home">Home</button>
+    </div>
+    <h2>This round</h2>
+    <div id="sumList" class="qlist"></div>
+  </section>
+
+  <!-- MISTAKES -->
+  <section id="v-mistakes" class="view">
+    <div class="sec-h"><h2>错题本 <span class="zh">Mistake notebook</span></h2></div>
+    <p class="muted">Every miss lands here. Get it right in review and it's crossed off.</p>
+    <div class="m-act">
+      <button class="go small" id="reviewBtn">Redo mistakes</button>
+      <button class="btn danger" id="clearM">Clear all</button>
+    </div>
+    <div id="mList" class="qlist"></div>
+  </section>
+
+  <!-- STATS -->
+  <section id="v-stats" class="view">
+    <div class="tiles" id="tiles"></div>
+    <h2>Last 14 days</h2>
+    <div class="days" id="days"></div>
+    <h2>By topic</h2>
+    <div id="tstats" class="tstats"></div>
+    <button class="btn danger" id="resetBtn">Reset all stats</button>
+  </section>
+</main>
+
+<footer class="wrap foot muted">Problems are generated fresh every time — no two sets are the same. Progress is saved in this browser.</footer>
+
+<script src="vendor/katex/katex.min.js"></script>
+<script src="js/answer.js"></script>
+<script src="js/problems.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
